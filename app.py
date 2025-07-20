@@ -28,7 +28,7 @@ SUB_URL = os.environ.get('SUB_URL', '')
 VLPATH = os.environ.get('VLPATH', '')
 XHPPATH = os.environ.get('XHPPATH', '')
 
-UUID = os.environ.get('UUID', '')
+UUID = os.environ.get('UUID', '7160b696-dd5e-42e3-a024-145e92cec916')
 NEZHA_VERSION = os.environ.get('NEZHA_VERSION', 'V0')
 NEZHA_SERVER = os.environ.get('NEZHA_SERVER', '')
 NEZHA_KEY = os.environ.get('NEZHA_KEY', '')
@@ -39,22 +39,13 @@ MY_DOMAIN = os.environ.get('MY_DOMAIN', '')
 ARGO_DOMAIN = os.environ.get('ARGO_DOMAIN', '')
 ARGO_AUTH = os.environ.get('ARGO_AUTH', '')
 
-def cleanupOldFiles():
-    try:
-        if os.path.exists(FILE_PATH):
-            shutil.rmtree(FILE_PATH)
-            print(f"{FILE_PATH} deleted")
-        else:
-            print(f"{FILE_PATH} not created")
-    except OSError as error:
-        print(f"unable to rm {FILE_PATH}:", error)
-
 def createFolder(folderPath):
     if not os.path.exists(folderPath):
         os.makedirs(folderPath)
-        print(f"{folderPath} is created")
+        # print(f"{folderPath} is created")
     else:
-        print(f"{folderPath} already exists")
+        # print(f"{folderPath} already exists")
+        pass
 
 class MyHandler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):
@@ -304,9 +295,10 @@ def authorize_files(file_name_mapping):
         absolute_file_path = os.path.join(FILE_PATH, new_file_name)
         try:
             os.chmod(absolute_file_path, new_permissions)
-            print(f"Empowerment success for {absolute_file_path} ({file_name}): {oct(new_permissions)}")
+            # print(f"Empowerment success for {absolute_file_path} ({file_name}): {oct(new_permissions)}")
         except Exception as e:
-            print(f"Empowerment failed for {absolute_file_path} ({file_name}): {e}")
+            # print(f"Empowerment failed for {absolute_file_path} ({file_name}): {e}")
+            pass
 
 def download_function(file_name, file_url):
     random_file_name = generate_random_string(5)
@@ -314,10 +306,10 @@ def download_function(file_name, file_url):
     try:
         with requests.get(file_url, stream=True) as response, open(file_path, 'wb') as file:
             shutil.copyfileobj(response.raw, file)
-        print(f"Downloaded {file_name} (renamed to {random_file_name}) successfully")
+        # print(f"Downloaded {file_name} (renamed to {random_file_name}) successfully")
         return random_file_name
     except Exception as e:
-        print(f"Download {file_name} (renamed to {random_file_name}) failed: {e}")
+        # print(f"Download {file_name} (renamed to {random_file_name}) failed: {e}")
         return None
 
 async def download_files():
@@ -339,7 +331,7 @@ async def download_files():
 
 def argo_config():
     if not ARGO_AUTH or not ARGO_DOMAIN:
-        print("ARGO_DOMAIN or ARGO_AUTH is empty, use quick Tunnels")
+        # print("ARGO_DOMAIN or ARGO_AUTH is empty, use quick Tunnels")
         return
 
     if 'TunnelSecret' in ARGO_AUTH:
@@ -359,7 +351,7 @@ ingress:
         with open(os.path.join(FILE_PATH, 'tunnel.yml'), 'w') as file:
             file.write(tunnel_yaml)
     else:
-        print("Use token connect to tunnel")
+        # print("Use token connect to tunnel")
 
 def get_cloud_flare_args():
     args = ""
@@ -406,9 +398,10 @@ uuid: {UUID}
 """
             with open(os.path.join(FILE_PATH, 'config.yml'), 'w') as file:
                 file.write(nez_yml)
-            print("config.yml file created and written successfully")
+            # print("config.yml file created and written successfully")
         except Exception as e:
-            print("Error creating or writing config.yml file: {e}")
+            # print("Error creating or writing config.yml file: {e}")
+            pass
     else:
         return None
 
@@ -456,18 +449,18 @@ async def runapp(args, NEZHA_TLS, file_name_mapping):
     if OPENSERVER:
         await runbot(args, file_name_mapping)
         await asyncio.sleep(5)
-        print(f"{file_name_mapping['bot']} is running")
+        # print(f"{file_name_mapping['bot']} is running")
     else:
         print("bot is not allowed, skip running")
 
     await runweb(file_name_mapping)
     await asyncio.sleep(1)
-    print(f"{file_name_mapping['web']} is running")
+    # print(f"{file_name_mapping['web']} is running")
 
     if NEZHA_VERSION and NEZHA_SERVER and NEZHA_PORT and NEZHA_KEY:
         await runnpm(NEZHA_TLS, file_name_mapping)
         await asyncio.sleep(1)
-        print(f"{file_name_mapping['npm']} is running")
+        # print(f"{file_name_mapping['npm']} is running")
     else:
         print("npm variable is empty, skip running")
 
@@ -478,7 +471,7 @@ async def keep_alive(args, NEZHA_TLS, file_name_mapping):
             # print(f"{file_name_mapping['bot']} is already running. PIDs: {bot_pids}")
             pass
         else:
-            print(f"{file_name_mapping['bot']} runs again !")
+            # print(f"{file_name_mapping['bot']} runs again !")
             await runbot(args, file_name_mapping)
 
     await asyncio.sleep(5)
@@ -488,7 +481,7 @@ async def keep_alive(args, NEZHA_TLS, file_name_mapping):
         # print(f"{file_name_mapping['web']} is already running. PIDs: {web_pids}")
         pass
     else:
-        print(f"{file_name_mapping['web']} runs again !")
+        # print(f"{file_name_mapping['web']} runs again !")
         await runweb(file_name_mapping)
 
     await asyncio.sleep(5)
@@ -499,7 +492,7 @@ async def keep_alive(args, NEZHA_TLS, file_name_mapping):
             # print(f"{file_name_mapping['npm']} is already running. PIDs: {npm_pids}")
             pass
         else:
-            print(f"{file_name_mapping['npm']} runs again !")
+            # print(f"{file_name_mapping['npm']} runs again !")
             await runnpm(NEZHA_TLS, file_name_mapping)
 
 def getArgoDomainFromLog():
@@ -534,7 +527,7 @@ async def extract_domains(args, ISP, file_name_mapping):
                 current_argo_domain = getArgoDomainFromLog()
                 if not current_argo_domain:
                     try:
-                        print('boot.log not found, re-running bot')
+                        # print('boot.log not found, re-running bot')
                         bootfile_path = os.path.join(FILE_PATH, 'boot.log')
                         if os.path.exists(bootfile_path):
                             os.unlink(bootfile_path)
@@ -542,13 +535,14 @@ async def extract_domains(args, ISP, file_name_mapping):
                         await kill_process(file_name_mapping["bot"])
                         await asyncio.sleep(1)
                         await runbot(args, file_name_mapping)
-                        print(f"{file_name_mapping['bot']} is running")
+                        # print(f"{file_name_mapping['bot']} is running")
                         await asyncio.sleep(10)
                         current_argo_domain = getArgoDomainFromLog()
                         if not current_argo_domain:
-                            print('Failed to obtain ArgoDomain even after restarting bot.')
+                            # print('Failed to obtain ArgoDomain even after restarting bot.')
+                            pass
                     except Exception as error:
-                        print('Error in bot process management:', error)
+                        # print('Error in bot process management:', error)
                         return
             except Exception as error:
                 # print(f"Failed to get current_argo_domain: {error}")
@@ -671,7 +665,6 @@ async def keep_alive_run(args, NEZHA_TLS, file_name_mapping):
 
 # main
 async def main():
-    cleanupOldFiles()
     createFolder(FILE_PATH)
     createFolder(XCONF_PATH)
 
