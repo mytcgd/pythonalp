@@ -352,6 +352,7 @@ ingress:
             file.write(tunnel_yaml)
     else:
         # print("Use token connect to tunnel")
+        pass
 
 def get_cloud_flare_args():
     args = ""
