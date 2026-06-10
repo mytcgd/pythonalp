@@ -2,14 +2,14 @@ FROM python:3.10-alpine
 
 WORKDIR /app
 
-COPY . .
+RUN apk add --no-cache bash curl openssl procps
 
-ARG PORT=3000
-ENV PORT=$PORT
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY app.py .
+
+ENV PORT=3000
 EXPOSE $PORT
-
-RUN apk update && apk --no-cache add openssl bash curl && \
-    chmod +x app.py && \
-    pip install -r requirements.txt
 
 CMD ["python3", "app.py"]
